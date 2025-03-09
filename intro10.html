@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Forensic Document Timeline</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- Import Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Open+Sans&display=swap" rel="stylesheet">
+  <style>
+    html {
+      scroll-behavior: smooth;
+    }
+    /* Reset & Base Styles */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      font-family: 'Open Sans', sans-serif;
+      background: #111;
+      color: #f5f5f5;
+      background-size: cover;
+      background-position: center;
+    }
+    /* Intro Section - EDIT PATH: Replace with your local intro background image path */
+    #intro {
+      position: relative;
+      height: 100vh;
+      width: 100%;
+      background: url('https://forensicexpertinvestigation.com/wp-content/uploads/2024/04/41-0-0-909-10000-8031-1920-1024x549.jpg') no-repeat center center/cover;
+    }
+    #intro h1 {
+      position: absolute;
+      top: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-family: 'Playfair Display', serif;
+      font-size: 3rem;
+      font-weight: 700;
+      color: #f5f5f5;
+      width: 90%;
+      max-width: 1000px;
+      text-shadow: 1px 1px 5px rgba(0,0,0,0.7);
+      z-index: 50;
+    }
+    /* Modal Popup */
+    #modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.6);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 100;
+    }
+    .modal-content {
+      background: rgba(0,0,0,0.75);
+      padding: 2rem;
+      border-radius: 8px;
+      max-width: 600px;
+      width: 90%;
+      text-align: center;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+    }
+    .welcome-text {
+      display: block;
+      text-align: center;
+      font-size: calc(1.2rem + 4px);
+      margin-bottom: 0.5rem;
+    }
+    .modal-content p {
+      font-size: 1.2rem;
+      line-height: 1.6;
+      margin-bottom: 1.5rem;
+    }
+    .modal-content button {
+      background: #f5f5f5;
+      color: #111;
+      border: none;
+      padding: 0.8rem 2rem;
+      font-size: 1rem;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+    .modal-content button:hover {
+      background: #ddd;
+    }
+    /* Intermediate Section */
+    #intermediate {
+      position: relative;
+      height: 100vh;
+      width: 100%;
+      /* Set a soft black background similar to the intro section */
+      background: rgba(0, 0, 0, 0.7);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .intermediate-container {
+      position: relative;
+      width: 100%;
+      max-width: 1000px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 20px;
+    }
+    /* The horizontal textbox: 500px wide and 60% of the section's height */
+    .intermediate-textbox {
+      width: 1000px;
+      height: 500px;
+      background: rgba(0, 0, 0, 0.7);
+      color: #f5f5f5;
+      padding: 20px;
+      border-radius: 8px;
+      font-size: 2rem;
+      line-height: 1.6;
+      text-align: left;
+      overflow-y: auto;
+    }
+    /* Intermediate arrow button at the bottom center */
+    .intermediate-button {
+      margin-top: 20px;
+      background: #f5f5f5;
+      color: #111;
+      border: none;
+      padding: 10px 20px;
+      font-size: 1rem;
+      border-radius: 4px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+      z-index: 70;
+    }
+    .intermediate-button:hover {
+      background: #ddd;
+    }
+    /* Timeline Section - EDIT PATH: Replace with your local timeline background image path */
+    #timeline {
+      position: relative;
+      min-height: 100vh;
+      background: url('https://forensicexpertinvestigation.com/wp-content/uploads/2024/04/41-0-0-909-10000-8031-1920-1024x549.jpg') no-repeat center center/cover;
+      color: #111;
+      padding: 2rem;
+      padding-bottom: 180px;
+    }
+    /* Horizontal Timeline Ruler Container */
+    .horizontal-timeline-container {
+      position: absolute;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 80%;
+      z-index: 100;
+    }
+    .timeline-bar-horizontal {
+      width: 100%;
+      height: 8px;
+      background: #000;
+      border-radius: 4px;
+    }
+    .timeline-labels {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 10px;
+    }
+    .timeline-label {
+      position: relative;
+      padding: 4px 6px;
+      background: #fff;
+      color: #111;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      font-size: 0.8rem;
+      cursor: pointer;
+    }
+    /* Global Postcard Popup */
+    .postcard {
+      position: absolute;
+      top: 40%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 70%;
+      max-width: 600px;
+      height: calc(70% + 10px);
+      background: rgba(0, 0, 0, 0.5); /* 50% transparent */
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+      padding: 20px;
+      color: #fff;
+      display: none;
+      z-index: 200;
+      /* Mosaic effect on left/right sides */
+      border-left: 50px solid rgba(0,0,0,0.3);
+      border-right: 50px solid rgba(0,0,0,0.3);
+      backdrop-filter: blur(8px);
+    }
+    .postcard-content {
+      height: 100%;
+      overflow-y: auto;
+    }
+    .postcard-content h3 {
+      text-align: center;
+      font-size: calc(1.2rem + 2px);
+      margin-bottom: 10px;
+    }
+    .postcard-content p {
+      font-size: 1.2rem;
+      line-height: 1.6;
+      margin-bottom: 10px;
+    }
+    .postcard-content img {
+      width: 100%;
+      margin-top: 10px;
+      border-radius: 4px;
+    }
+  </style>
+</head>
+<body>
+  <!-- Intro Section -->
+  <section id="intro">
+    <h1>Evolution of Forensic Document Examination</h1>
+  </section>
+  
+  <!-- Modal Popup -->
+  <div id="modal">
+    <div class="modal-content">
+      <p>
+        <span class="welcome-text">Welcome</span><br>
+        The aim of this website is to provide a glimpse into some of the landmark events that played a key role in how we perceive forensic documents and handwriting today. These events changed the way we examine forensic documents forever. Ready to dive in?
+      </p>
+      <button id="gotItButton">Yes</button>
+    </div>
+  </div>
+  
+  <!-- Intermediate Section -->
+  <section id="intermediate">
+    <div class="intermediate-container">
+      <div class="intermediate-textbox">
+        Forensic Document Examination (FDE) is a specialized branch of forensic science focused on analyzing documents to determine their authenticity, origin, or authorship. It involves scientific methods to investigate questioned documents, such as handwriting, signatures, printed text, ink, paper, and digital files. Examiners use their expertise to uncover forgeries, alterations, or hidden details that can be critical in legal, historical, or financial contexts.
+      </div>
+      <button id="arrowButton" class="intermediate-button">Timeline &#8595;</button>
+    </div>
+  </section>
+  
+  <!-- Timeline Section -->
+  <section id="timeline">
+    <!-- Global Postcard Popup -->
+    <div id="globalPostcard" class="postcard">
+      <div class="postcard-content"></div>
+    </div>
+    
+    <!-- Horizontal Timeline Ruler Container -->
+    <div class="horizontal-timeline-container">
+      <div class="timeline-bar-horizontal"></div>
+      <div class="timeline-labels">
+        <!-- Update each label's data-bg-image and data-postcard-content with your local file paths -->
+        <div class="timeline-label" 
+             data-bg-image="https://images.metmuseum.org/CRDImages/eg/original/DT11633.jpg" 
+             data-postcard-content='<div class="postcard-content"><h3>Ancient Egypt (c. 3000 BCE) – Early Scribes and Hieroglyphic Authentication</h3><p>•	Egyptian scribes played a crucial role in recording official decrees, religious texts, and legal documents.</p>
+<p>•	Forensic document examination in modern times has helped authenticate ancient papyri, such as the "Book of the Dead," by analyzing ink composition and handwriting styles.</p>
+</p><img src="https://upload.wikimedia.org/wikipedia/commons/c/c9/Hieroglyphs_from_the_tomb_of_Seti_I.jpg" alt="Ancient Egypt"></div>'>
+          Ancient Egypt
+        </div>
+
+        <div class="timeline-label" 
+             data-bg-image="https://www.thoughtco.com/thmb/vWzBqSezJ6bkQ0qXCN1JP5VwvTQ=/750x0/filters:no_upscale():max_bytes(150000):strip_icc():format(webp)/budapest-during-the-middle-ages-from-the-nuremberg-chronicle-1493-hungary-58c95ee75f9b58af5c78065d.jpg" 
+             data-postcard-content='<div class="postcard-content"><h3>Medieval Europe (500–1500 CE) – Forged Religious Texts and Manuscripts</h3><p>•	The Donation of Constantine, a document supposedly granting vast powers to the Pope, was later proven a forgery through handwriting and linguistic analysis.</p>
+<p>•	Scribes in monasteries developed distinct script styles, allowing modern forensic experts to identify forgeries in medieval documents.
+</p><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSJHl3dfgQeJgUtYoZb3YfHt4h-WkekhRwjvw&s" alt="Medieval Europe"></div>'>
+          Medieval Europe
+        </div>
+
+        <div class="timeline-label" 
+             data-bg-image="https://blogs.loc.gov/law/files/2021/11/Arbre-des-Batailles-MS-2-1024x768.jpg" 
+             data-postcard-content='<div class="postcard-content"><h3>15th Century – The Gutenberg Press and the Rise of Document Standardization</h3><p>•	The invention of the printing press led to a decline in handwritten documents, but signatures and handwritten annotations remained crucial for authentication.
+<p>•	Early forgeries of royal decrees and legal documents were exposed through handwriting inconsistencies.</p>
+</p><img src="https://study.com/cimages/videopreview/7sq9yeqpow.jpg" alt="15th Century"></div>'>
+          15th Century
+        </div>
+
+	<div class="timeline-label" 
+             data-bg-image="https://lessonplans.dwrl.utexas.edu/sites/default/files/Idle%20Prentice.jpg" 
+             data-postcard-content='<div class="postcard-content"><h3>18th–19th Century – Forgery Detection in Legal and Financial Documents</h3><p>•	The rise of banking and legal contracts increased cases of signature forgery.</p>
+<p>•	In 1795, French scientist Jacques-Arsène d’Arsonval developed early techniques for ink analysis. 
+</p><h4><b>1894 – The Dreyfus Affair (France)</b></h4><br>
+<p>•	Captain Alfred Dreyfus was falsely accused of espionage based on forged handwritten letters.</p>
+<p>•	Handwriting experts initially confirmed the letters as his, but later forensic re-examination proved the forgery, leading to his exoneration.
+</p><img src="https://www.gutenberg.org/files/64720/64720-h/images/cover.jpg" alt="18th-19th Century"></div>'>
+          18th-19th Century
+        </div>
+      
+	<div class="timeline-label" 
+             data-bg-image="https://www.classicist.org/assets/images/heros/_aboutHero/14798/NYC_Hero.jpg" 
+             data-postcard-content='<div class="postcard-content"><h3>20th Century – Scientific Advancements in Forensic Document Examination</h3><p>Microscopic analysis, UV, and IR techniques became standard for detecting ink alterations and document tampering.</p><br>
+<p><b>1925 – The Zodiac Killer Letters (San Francisco, USA)</b></p>
+<p>•	A series of cryptic letters and ciphers were sent to newspapers by an unidentified serial killer.</p>
+<p>•	Forensic handwriting analysis helped link different letters to the same author, but the killer was never identified.</p><br>
+<img src="https://static.independent.co.uk/s3fs-public/thumbnails/image/2018/05/09/14/zodiac-killer-letters.jpg" alt="18th-19th Century">
+<br><br><p><b>1932 – The Lindbergh Kidnapping (USA)</b></p>
+<p>•	Charles Lindbergh’s infant son was kidnapped, and ransom notes were analyzed by handwriting experts.</p>
+<p>•	Analysis linked Bruno Hauptmann to the notes, leading to his conviction and execution in 1936.</p><br>
+<img src="https://www.fbi.gov/image-repository/chas-jr1.jpg/@@images/image/high" alt="18th-19th Century">
+<br><br><p><b>1940s – The Hitler Diaries Scandal (Germany)</b></p>
+<p>•	In the 1980s, diaries supposedly written by Adolf Hitler surfaced, claiming to provide insights into his life.</p>
+<p>•	Forensic experts analyzed the handwriting and confirmed they were forged, exposing one of the greatest historical frauds</p>
+<img src="https://static.independent.co.uk/s3fs-public/thumbnails/image/2018/05/04/14/fake-hitler-diaries.jpg" alt="20th Century"></div>'>
+          20th Century
+        </div>
+        
+	<div class="timeline-label" 
+             data-bg-image="https://www.allerin.com/wp-blog/wp-content/uploads/2019/05/ai-based-forgery.jpg" 
+             data-postcard-content='<div class="postcard-content"><h3>21st Century – Digital and AI-Based Document Examination</h3><p>•	Modern forensic examiners use AI-powered handwriting recognition and ink dating techniques to detect forgeries.</p>
+<p>•	The rise of deepfake documents and digitally altered texts presents new challenges for forensic experts.
+</p><img src="https://iadsb.tmgrup.com.tr/9d9992/1200/627/0/24/1000/546?u=https://idsb.tmgrup.com.tr/2019/11/12/1573559077200.jpg" alt="21st Century"></div>'>
+          21st Century
+        </div>
+      </div>
+    </div>
+  </section>
+  
+  <script>
+    // Modal: When "Yes" is clicked, hide the modal and auto-scroll to the Intermediate Section.
+    document.getElementById("gotItButton").addEventListener("click", function() {
+      document.getElementById("modal").style.display = "none";
+      document.getElementById("intermediate").scrollIntoView({ behavior: "smooth" });
+    });
+    
+    // Arrow Button: Scroll to the Timeline Section on click.
+    document.getElementById("arrowButton").addEventListener("click", function() {
+      document.getElementById("timeline").scrollIntoView({ behavior: "smooth" });
+    });
+    
+    // Global Postcard: When hovering over a timeline label, update the popup content and change the timeline section background.
+    const globalPostcard = document.getElementById("globalPostcard");
+    const timelineLabels = document.querySelectorAll(".timeline-label");
+    const timelineSection = document.getElementById("timeline");
+    
+    timelineLabels.forEach(label => {
+      label.addEventListener("mouseenter", () => {
+        const content = label.getAttribute("data-postcard-content");
+        globalPostcard.innerHTML = content;
+        globalPostcard.style.display = "block";
+        const bgPath = label.getAttribute("data-bg-image");
+        if(bgPath) {
+          timelineSection.style.backgroundImage = "url('" + bgPath + "')";
+        }
+      });
+    });
+  </script>
+</body>
+</html>
